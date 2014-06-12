@@ -4,6 +4,7 @@
  * party and contributor rights, including patent rights, and no such rights
  * are granted under this license.
  *
+ * Copyright (c) 2014, Aaron Boxer
  * Copyright (c) 2002-2014, Universite catholique de Louvain (UCL), Belgium
  * Copyright (c) 2002-2014, Professor Benoit Macq
  * Copyright (c) 2001-2003, David Janssens
@@ -102,6 +103,12 @@ typedef struct opj_stream_private
 	 * User data length
 	 */
 	OPJ_UINT64 				m_user_data_length;
+
+	/**
+	 * Pointer to actual free function (NULL at the initialization of the cio)
+	 */
+
+	opj_stream_free_user_data_fn     m_free_fn;
 
 	/**
 	 * Pointer to actual read function (NULL at the initialization of the cio.

@@ -4,6 +4,7 @@
  * party and contributor rights, including patent rights, and no such rights
  * are granted under this license.
  *
+ * Copyright (c) 2014, Aaron Boxer
  * Copyright (c) 2002-2014, Universite catholique de Louvain (UCL), Belgium
  * Copyright (c) 2002-2014, Professor Benoit Macq
  * Copyright (c) 2001-2003, David Janssens
@@ -201,6 +202,18 @@ void OPJ_CALLCONV opj_stream_destroy(opj_stream_t* p_stream)
 		l_stream->m_stored_data = 00;
 		opj_free(l_stream);
 	}
+}
+
+
+void OPJ_CALLCONV opj_stream_set_free_function(opj_stream_t* p_stream, opj_stream_free_user_data_fn p_function)
+{
+	opj_stream_private_t* l_stream = (opj_stream_private_t*) p_stream;
+
+	if (!l_stream) {
+		return;
+	}
+
+	l_stream->m_free_fn = p_function;
 }
 
 void OPJ_CALLCONV opj_stream_set_read_function(opj_stream_t* p_stream, opj_stream_read_fn p_function)
