@@ -1162,7 +1162,8 @@ int main(int argc, char **argv)
 	img_fol_t img_fol;
 	dircnt_t *dirptr = NULL;
   int failed = 0;
-  OPJ_FLOAT64 t;
+  OPJ_FLOAT64 t, tCumulative = 0;
+  OPJ_UINT32 numDecompressedImages = 0;
 
 	/* set decoding parameters to default values */
 	set_default_parameters(&parameters);
@@ -1209,8 +1210,6 @@ int main(int argc, char **argv)
 	}else{
 		num_images=1;
 	}
-
-	 t = opj_clock();
 
 	/*Decoding image one by one*/
 	for(imageno = 0; imageno < num_images ; imageno++)	{
@@ -1268,6 +1267,8 @@ int main(int argc, char **argv)
 		opj_set_info_handler(l_codec, info_callback,00);
 		opj_set_warning_handler(l_codec, warning_callback,00);
 		opj_set_error_handler(l_codec, error_callback,00);
+
+		t = opj_clock();
 
 		/* Setup the decoder decoding parameters using user parameters */
 		if ( !opj_setup_decoder(l_codec, &(parameters.core)) ){
@@ -1333,10 +1334,13 @@ int main(int argc, char **argv)
 			fprintf(stdout, "tile %d is decoded!\n\n", parameters.tile_index);
 		}
 
+		tCumulative += opj_clock() - t;
+		numDecompressedImages++;
+
 		/* Close the byte stream */
 		opj_stream_destroy(l_stream);
 
-		t = opj_clock() - t;
+
 
 		if(image->color_space == OPJ_CLRSPC_SYCC){
 			color_sycc_to_rgb(image); /* FIXME */
@@ -1533,7 +1537,7 @@ int main(int argc, char **argv)
 		if(failed) remove(parameters.outfile);
 	}
 	destroy_parameters(&parameters);
-	fprintf(stdout, "decode time: %d ms \n", (int)(t * 1000));
+	fprintf(stdout, "decode time: %d ms \n", (int)( (tCumulative * 1000) / numDecompressedImages));
 	scanf("%d");
 	return failed ? EXIT_FAILURE : EXIT_SUCCESS;
 }
