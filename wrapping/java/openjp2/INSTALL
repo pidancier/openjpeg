@@ -1,6 +1,8 @@
 In order to deploy JNI components on GAEL repository you
-need to specify the directory location of openjpeg
-libraries via the property 'openjpeg.library.dir' and
-use the command line:
-  mvn deploy -Dopenjpeg.library.dir="path/to/directory"
+need to specify two properties:
+ - the directory location of openjpeg libraries 'openjpeg.library.dir'.
+ - the server access id to GAEL repository 'server.id' (see maven settings.xml).
+
+example:
+  mvn clean deploy -Dopenjpeg.library.dir=<path/to/directory> -Dserver.id=<serverId>
 

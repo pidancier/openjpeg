@@ -5,7 +5,7 @@
 
    <groupId>org.openJpeg</groupId>
    <artifactId>imageio-openjpeg</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.1</version>
    <packaging>jar</packaging>
 
    <name>imageio-openjpeg</name>
@@ -13,16 +13,20 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <openjpeg.library.version>2.0.1-SNAPSHOT</openjpeg.library.version>
+      <openjpeg.library.version>2.1.0</openjpeg.library.version>
       <library.classifier.name>native</library.classifier.name>
+      <repository.url>http://repository.gael.fr:8081/nexus/content/groups/public</repository.url>
    </properties>
 
-   <repositories>
+   <distributionManagement>
       <repository>
-         <id>gael-library-repository</id>
-         <url>http://repository.gael.fr:8081/nexus/content/groups/public</url>
+         <id>gael-main-repo</id>
+         <name>GAEL Release Repository</name>
+         <uniqueVersion>false</uniqueVersion>
+         <url>${repository.url}</url>
+         <layout>default</layout>
       </repository>
-   </repositories>
+   </distributionManagement>
 
    <dependencies>
       <dependency>
@@ -58,6 +62,12 @@
                            <regex>..*</regex>
                            <regexMessage>"Property 'openjpeg.library.dir' is empty !"</regexMessage>
                         </requireProperty>
+                        <requireProperty>
+                           <property>server.id</property>
+                           <message>"Missing property 'server.id' !"</message>
+                           <regex>..*</regex>
+                           <regexMessage>"Property 'server.id' is empty !"</regexMessage>
+                        </requireProperty>
                      </rules>
                   </configuration>
                </execution>
@@ -70,23 +80,7 @@
             <version>2.5.2</version>
             <executions>
                <execution>
-                  <id>install-libopenjp2</id>
-                  <phase>install</phase>
-                  <goals>
-                     <goal>install-file</goal>
-                  </goals>
-                  <configuration>
-                     <file>${openjpeg.library.dir}/libopenjp2.so</file>
-                     <repositoryLayout>default</repositoryLayout>
-                     <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2</artifactId>
-                     <version>${openjpeg.library.version}</version>
-                     <classifier>native</classifier>
-                     <packaging>so</packaging>
-                  </configuration>
-               </execution>
-               <execution>
-                  <id>install-libopenjp2-2.1.0</id>
+                  <id>install-lib-openjpeg</id>
                   <phase>install</phase>
                   <goals>
                      <goal>install-file</goal>
@@ -95,25 +89,25 @@
                      <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
                      <repositoryLayout>default</repositoryLayout>
                      <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2-2.1.0</artifactId>
+                     <artifactId>libopenjpeg</artifactId>
                      <version>${openjpeg.library.version}</version>
-                     <classifier>native</classifier>
+                     <classifier>${library.classifier.name}</classifier>
                      <packaging>so</packaging>
                   </configuration>
                </execution>
                <execution>
-                  <id>install-libopenjp2-7</id>
+                  <id>install-lib-openjpeg-jni</id>
                   <phase>install</phase>
                   <goals>
                      <goal>install-file</goal>
                   </goals>
                   <configuration>
-                     <file>${openjpeg.library.dir}/libopenjp2.so.7</file>
+                     <file>${openjpeg.library.dir}/libopenjpegjni.so</file>
                      <repositoryLayout>default</repositoryLayout>
                      <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2-7</artifactId>
+                     <artifactId>libopenjpeg-jni</artifactId>
                      <version>${openjpeg.library.version}</version>
-                     <classifier>native</classifier>
+                     <classifier>${library.classifier.name}</classifier>
                      <packaging>so</packaging>
                   </configuration>
                </execution>
@@ -126,17 +120,17 @@
             <version>2.8.2</version>
             <executions>
                <execution>
-                  <id>deploy-libopenjp2</id>
+                  <id>deploy-lib-openjpeg</id>
                   <phase>deploy</phase>
                   <goals>
                      <goal>deploy-file</goal>
                   </goals>
                   <configuration>
-                     <file>${openjpeg.library.dir}/libopenjp2.so</file>
-                     <url>http://repository.gael.fr:8081/nexus/content/groups/public</url>
-                     <repositoryId>gael-library-repository</repositoryId>
+                     <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
+                     <url>${repository.url}</url>
+                     <repositoryId>${server.id}</repositoryId>
                      <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2</artifactId>
+                     <artifactId>libopenjpeg</artifactId>
                      <version>${openjpeg.library.version}</version>
                      <classifier>${library.classifier.name}</classifier>
                      <packaging>so</packaging>
@@ -149,28 +143,11 @@
                      <goal>deploy-file</goal>
                   </goals>
                   <configuration>
-                     <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
-                     <url>http://repository.gael.fr:8081/nexus/content/groups/public</url>
-                     <repositoryId>gael-library-repository</repositoryId>
+                     <file>${openjpeg.library.dir}/libopenjpegjni.so</file>
+                     <url>${repository.url}</url>
+                     <repositoryId>${server.id}</repositoryId>
                      <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2-2.1.0</artifactId>
-                     <version>${openjpeg.library.version}</version>
-                     <classifier>${library.classifier.name}</classifier>
-                     <packaging>so</packaging>
-                  </configuration>
-               </execution>
-               <execution>
-                  <id>deploy-libopenjp2-7</id>
-                  <phase>deploy</phase>
-                  <goals>
-                     <goal>deploy-file</goal>
-                  </goals>
-                  <configuration>
-                     <file>${openjpeg.library.dir}/libopenjp2.so.7</file>
-                     <url>http://repository.gael.fr:8081/nexus/content/groups/public</url>
-                     <repositoryId>gael-library-repository</repositoryId>
-                     <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2-7</artifactId>
+                     <artifactId>libopenjpeg-jni</artifactId>
                      <version>${openjpeg.library.version}</version>
                      <classifier>${library.classifier.name}</classifier>
                      <packaging>so</packaging>
