@@ -21,12 +21,12 @@ public class JP2KOpenJpegImageWriterSpi extends GenericImageWriterSpi {
 
     static final String version = "1.0";
 
-    static final String writerCN = "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageWriterSpi";
+    static final String writerCN = "org.openJpeg.JP2KOpenJpegImageWriterSpi";
 
     static final String vendorName = "CodecCentral";
 
     // ReaderSpiNames
-    static final String[] readerSpiName = { "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageReaderSpi" };
+    static final String[] readerSpiName = { "org.openJpeg.JP2KOpenJpegImageReaderSpi" };
 
     // StreamMetadataFormatNames and StreamMetadataFormatClassNames
     static final boolean supportsStandardStreamMetadataFormat = false;

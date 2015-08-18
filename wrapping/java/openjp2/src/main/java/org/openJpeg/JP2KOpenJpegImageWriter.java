@@ -32,7 +32,7 @@ public class JP2KOpenJpegImageWriter extends GenericImageWriter {
 
 
     /** The LOGGER for this class. */
-    private static final Logger LOGGER = Logger.getLogger("org.openJpeg.imageio_openjpeg");
+    private static final Logger LOGGER = Logger.getLogger("org.openJpeg");
 
     /** The System Property key used to define the maximum buffer size */
     public final static String MAX_BUFFER_SIZE_KEY = "org.openJpeg.maxBufferSize";

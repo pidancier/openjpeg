@@ -26,7 +26,7 @@ public class JP2KOpenJpegImageReaderSpi extends GenericImageReaderSpi {
 
     static final String version = "1.0";
 
-    static final String readerCN = "org.openJpeg.imageio_openjpeg.JP2KOpenJpegImageReader";
+    static final String readerCN = "org.openJpeg.JP2KOpenJpegImageReader";
 
     static final String vendorName = "CodecCentral";
 
