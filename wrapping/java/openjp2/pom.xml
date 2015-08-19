@@ -14,16 +14,17 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <openjpeg.library.version>2.1.0</openjpeg.library.version>
-      <repository.url>http://repository.gael.fr:8081/nexus/content/groups/public</repository.url>
+      <repository.url>http://repository.gael.fr:8081/nexus/content/repositories/releases</repository.url>
+      <server.id>gael-main</server.id>
+      <library.classifier.name>${os.family}-${os.arch}</library.classifier.name>
       <openjpeg.library.dir></openjpeg.library.dir>
-      <server.id></server.id>
    </properties>
     
    <distributionManagement>
       <repository>
-         <id>gael-main-repo</id>
-         <name>GAEL Release Repository</name>
-         <uniqueVersion>false</uniqueVersion>
+         <uniqueVersion>true</uniqueVersion>
+         <id>${server.id}</id>
+         <name>GAEL Main Repository</name>
          <url>${repository.url}</url>
          <layout>default</layout>
       </repository>
@@ -63,12 +64,6 @@
                            <regex>..*</regex>
                            <regexMessage>"Property 'openjpeg.library.dir' is empty !"</regexMessage>
                         </requireProperty>
-                        <requireProperty>
-                           <property>server.id</property>
-                           <message>"Missing property 'server.id' !"</message>
-                           <regex>..*</regex>
-                           <regexMessage>"Property 'server.id' is empty !"</regexMessage>
-                        </requireProperty>
                      </rules>
                   </configuration>
                </execution>
@@ -87,19 +82,19 @@
                <family>unix</family>
             </os>
          </activation>
-            
+         
          <properties>
-            <build.type>unix</build.type>
+            <os.family>unix</os.family>
          </properties>
-            
+
          <dependencies>
             <dependency>
                <groupId>org.openJpeg</groupId>
                <artifactId>openjp2</artifactId>
                <version>${openjpeg.library.version}</version>
                <scope>system</scope>
-               <systemPath>${openjpeg.library.dir}/libopenjp2.so</systemPath>
-               <classifier>${build.type}</classifier>
+               <systemPath>${openjpeg.library.dir}/libopenjp2.so.2.1.0</systemPath>
+               <classifier>${library.classifier.name}</classifier>
                <type>so</type>
             </dependency>
                 
@@ -109,7 +104,7 @@
                <version>${openjpeg.library.version}</version>
                <scope>system</scope>
                <systemPath>${openjpeg.library.dir}/libopenjpegjni.so</systemPath>
-               <classifier>${build.type}</classifier>
+               <classifier>${library.classifier.name}</classifier>
                <type>so</type>
             </dependency>
          </dependencies>
@@ -128,12 +123,12 @@
                            <goal>install-file</goal>
                         </goals>
                         <configuration>
-                           <file>${openjpeg.library.dir}/libopenjp2.so</file>
+                           <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
                            <repositoryLayout>default</repositoryLayout>
                            <groupId>org.openJpeg</groupId>
                            <artifactId>openjp2</artifactId>
                            <version>${openjpeg.library.version}</version>
-                           <classifier>${build.type}</classifier>
+                           <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
                         </configuration>
                      </execution>
@@ -149,7 +144,7 @@
                            <groupId>org.openJpeg</groupId>
                            <artifactId>openjpegjni</artifactId>
                            <version>${openjpeg.library.version}</version>
-                           <classifier>${build.type}</classifier>
+                           <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
                         </configuration>
                      </execution>
@@ -162,24 +157,24 @@
                   <version>2.8.2</version>
                   <executions>
                      <execution>
-                        <id>deploy-lib-openjpeg</id>
+                        <id>deploy-libopenjp2</id>
                         <phase>deploy</phase>
                         <goals>
                            <goal>deploy-file</goal>
                         </goals>
                         <configuration>
-                           <file>${openjpeg.library.dir}/libopenjp2.so</file>
+                           <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
                            <url>${repository.url}</url>
                            <repositoryId>${server.id}</repositoryId>
                            <groupId>org.openJpeg</groupId>
                            <artifactId>openjp2</artifactId>
                            <version>${openjpeg.library.version}</version>
-                           <classifier>${build.type}</classifier>
+                           <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
                         </configuration>
                      </execution>
                      <execution>
-                        <id>deploy-libopenjp2-2.1.0</id>
+                        <id>deploy-libopenjpegjni</id>
                         <phase>deploy</phase>
                         <goals>
                            <goal>deploy-file</goal>
@@ -209,8 +204,9 @@
                <family>windows</family>
             </os>
          </activation>
+         
          <properties>
-            <build.type>windows</build.type>
+            <os.family>win</os.family>
          </properties>
       </profile>
    </profiles>
