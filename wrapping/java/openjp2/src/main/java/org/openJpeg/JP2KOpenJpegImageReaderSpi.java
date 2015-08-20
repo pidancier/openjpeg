@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -75,7 +76,11 @@ public class JP2KOpenJpegImageReaderSpi extends GenericImageReaderSpi {
 		nativeImageMetadataFormatClassName,
 		extraImageMetadataFormatNames,
 		extraImageMetadataFormatClassNames);
-		libraries = Arrays.asList("openjpegjni", "openjp2");
+      
+      String libOpenJpegJni = "openjpegjni-" + getLibSuffix ();
+      String libOpenJpeg = "openjp2-" + getLibSuffix ();
+      
+	libraries = Arrays.asList(libOpenJpegJni, libOpenJpeg);
 	_utilities.loadLibraries(libraries);
 	format = "jpeg2000";
     }
@@ -103,5 +108,17 @@ public class JP2KOpenJpegImageReaderSpi extends GenericImageReaderSpi {
 	return new StringBuffer("JP2K Image Reader, version ").append(version).toString();
     }
 
-
+   private String getLibSuffix () {
+       try {
+          java.io.InputStream in = getClass().getClassLoader().getResourceAsStream("pom.properties");
+          if (in == null)
+             throw new IOException ("Cannot find resource for library properties !");
+          Properties p = new Properties();
+          p.load(in);
+          return  p.getProperty("openjpeg.library.version")+ "-" + p.getProperty("library.classifier.name");
+       } catch (IOException ex) {
+          System.err.println("Cannot load library properties !" + ex);
+          return "null";
+       }      
+   }
 }

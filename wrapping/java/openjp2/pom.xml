@@ -29,6 +29,14 @@
          <layout>default</layout>
       </repository>
    </distributionManagement>
+   
+   <repositories>
+      <repository>
+         <id>www.dcm4che.org</id>
+         <name>dcm4che Repository</name>
+         <url>http://www.dcm4che.org/maven2</url>
+      </repository>
+   </repositories>
     
    <dependencies>
       <dependency>
@@ -69,6 +77,24 @@
                </execution>
             </executions>
          </plugin>
+         
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.0-alpha-2</version>
+            <executions>
+               <execution>
+                  <id>add-properties</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>write-project-properties</goal>
+                  </goals>
+                  <configuration>
+                     <outputFile>${project.build.outputDirectory}/pom.properties</outputFile>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
          
@@ -87,28 +113,6 @@
             <os.family>unix</os.family>
          </properties>
 
-         <dependencies>
-            <dependency>
-               <groupId>org.openJpeg</groupId>
-               <artifactId>openjp2</artifactId>
-               <version>${openjpeg.library.version}</version>
-               <scope>system</scope>
-               <systemPath>${openjpeg.library.dir}/libopenjp2.so.2.1.0</systemPath>
-               <classifier>${library.classifier.name}</classifier>
-               <type>so</type>
-            </dependency>
-                
-            <dependency>
-               <groupId>org.openJpeg</groupId>
-               <artifactId>openjpegjni</artifactId>
-               <version>${openjpeg.library.version}</version>
-               <scope>system</scope>
-               <systemPath>${openjpeg.library.dir}/libopenjpegjni.so</systemPath>
-               <classifier>${library.classifier.name}</classifier>
-               <type>so</type>
-            </dependency>
-         </dependencies>
-            
          <build>
             <plugins>
                <plugin>
@@ -126,7 +130,7 @@
                            <file>${openjpeg.library.dir}/libopenjp2.so.2.1.0</file>
                            <repositoryLayout>default</repositoryLayout>
                            <groupId>org.openJpeg</groupId>
-                           <artifactId>openjp2</artifactId>
+                           <artifactId>libopenjp2</artifactId>
                            <version>${openjpeg.library.version}</version>
                            <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
@@ -142,7 +146,7 @@
                            <file>${openjpeg.library.dir}/libopenjpegjni.so</file>
                            <repositoryLayout>default</repositoryLayout>
                            <groupId>org.openJpeg</groupId>
-                           <artifactId>openjpegjni</artifactId>
+                           <artifactId>libopenjpegjni</artifactId>
                            <version>${openjpeg.library.version}</version>
                            <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
@@ -167,7 +171,7 @@
                            <url>${repository.url}</url>
                            <repositoryId>${server.id}</repositoryId>
                            <groupId>org.openJpeg</groupId>
-                           <artifactId>openjp2</artifactId>
+                           <artifactId>libopenjp2</artifactId>
                            <version>${openjpeg.library.version}</version>
                            <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
@@ -184,7 +188,7 @@
                            <url>${repository.url}</url>
                            <repositoryId>${server.id}</repositoryId>
                            <groupId>org.openJpeg</groupId>
-                           <artifactId>openjpegjni</artifactId>
+                           <artifactId>libopenjpegjni</artifactId>
                            <version>${openjpeg.library.version}</version>
                            <classifier>${library.classifier.name}</classifier>
                            <packaging>so</packaging>
