@@ -16,7 +16,7 @@
       <openjpeg.library.version>2.1.0</openjpeg.library.version>
       <repository.url>http://repository.gael.fr:8081/nexus/content/repositories/releases</repository.url>
       <server.id>gael-main</server.id>
-      <library.classifier.name>${os.family}-${os.arch}</library.classifier.name>
+      <library.classifier.name>${os.name}-${os.arch}</library.classifier.name>
       <openjpeg.library.dir></openjpeg.library.dir>
    </properties>
     
@@ -108,10 +108,6 @@
                <family>unix</family>
             </os>
          </activation>
-         
-         <properties>
-            <os.family>unix</os.family>
-         </properties>
 
          <build>
             <plugins>
@@ -154,7 +150,7 @@
                      </execution>
                   </executions>
                </plugin>
-                    
+
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-deploy-plugin</artifactId>
@@ -208,10 +204,6 @@
                <family>windows</family>
             </os>
          </activation>
-         
-         <properties>
-            <os.family>win</os.family>
-         </properties>
       </profile>
    </profiles>
 
