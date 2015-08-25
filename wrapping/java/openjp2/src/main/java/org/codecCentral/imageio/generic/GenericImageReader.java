@@ -69,7 +69,8 @@ public abstract class GenericImageReader extends ImageReader {
 	public int getNumImages(boolean allowSearch) throws IOException {
 		return numImages;
 	}
-	public BufferedImage read(int imageIndex, ImageReadParam param)
+
+      public BufferedImage read(int imageIndex, ImageReadParam param)
 			throws IOException {
 		checkImageIndex(imageIndex);
 		if (decoder == null)
@@ -127,8 +128,8 @@ public abstract class GenericImageReader extends ImageReader {
 		return bufimg;
 	}
 
-	public void setInput(Object input, boolean seekForwardOnly,
-			boolean ignoreMetadata) {
+      @Override
+	public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
 		reset();
 		if (input == null)
 			throw new NullPointerException("The provided input is null!");
@@ -149,11 +150,15 @@ public abstract class GenericImageReader extends ImageReader {
 				
 				ImageInputStream iis = (ImageInputStream)input;
 				byte[] compressedBytes = new byte[(int)iis.length()];
+                        byte[] tempBuff = new byte [TEMP_BUFFER_SIZE];
 				int bytesRead = 0;
 				int offset = 0;
-				while ((bytesRead = iis.read(compressedBytes,offset, TEMP_BUFFER_SIZE)) != -1)
-					offset +=bytesRead;
-				decoder.setCompressedStream(compressedBytes);
+				while ((bytesRead = iis.read(tempBuff, 0, TEMP_BUFFER_SIZE)) != -1)
+                        {
+                           System.arraycopy(tempBuff, 0, compressedBytes, offset, bytesRead);
+                           offset +=bytesRead;
+                        }
+				decoder.setCompressedStream(compressedBytes);                                                
 			} catch (IOException ioe) {
 				throw new RuntimeException("Unable to read data from ImageInputStream", ioe);
 			}
@@ -164,24 +169,26 @@ public abstract class GenericImageReader extends ImageReader {
 			inputFile = new File(info.fileName);
 			decoder.SetSegmentPositions(info.segmentOffsets);
 			decoder.SetSegmentLengths(info.segmentLengths);
-	}
+            }
 		else
 		{
 			throw new IllegalArgumentException("Incorrect input type!");
 		}
 
 		if (this.inputFile != null)
-    		fileName = inputFile.getAbsolutePath();
-		
+               fileName = inputFile.getAbsolutePath();
+
 		numImages = 1;
 		super.setInput(input, seekForwardOnly, ignoreMetadata);
 	}
 
+      @Override
 	public void dispose() {
 		super.dispose();
 		numImages = 1;
 	}
 
+      @Override
 	public void reset() {
 		super.setInput(null, false, false);
 		dispose();
