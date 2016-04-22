@@ -975,7 +975,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
 					}
 
 					if (! l_current_precinct->incltree)     {
-						fprintf(stderr, "WARNING: No incltree created.\n");
+						/* fprintf(stderr, "WARNING: No incltree created.\n"); */
 						/*return OPJ_FALSE;*/
 					}
 
@@ -992,7 +992,7 @@ static INLINE OPJ_BOOL opj_tcd_init_tile(opj_tcd_t *p_tcd, OPJ_UINT32 p_tile_no,
 					}
 
 					if (! l_current_precinct->imsbtree) {
-						fprintf(stderr, "WARNING: No imsbtree created.\n");
+					/*	fprintf(stderr, "WARNING: No imsbtree created.\n"); */
 						/*return OPJ_FALSE;*/
 					}
 
