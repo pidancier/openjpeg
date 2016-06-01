@@ -26,6 +26,7 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -76,11 +77,17 @@ public abstract class GenericImageReader extends ImageReader {
       checkImageIndex (imageIndex);
       if (decoder == null)
       {
-         return null;
+         throw new NullPointerException("OpenJpeg decoder not initialized.");
       }
 
-      decoder.decode (fileName);
-      decoder.setCompressedStream (null);
+      if (fileName!=null)
+      {
+         decoder.decode (fileName);
+         decoder.setCompressedStream (null);
+      }
+      else
+         decoder.decode(null);
+      
 
       int width = decoder.getWidth ();
       int height = decoder.getHeight ();
@@ -159,18 +166,14 @@ public abstract class GenericImageReader extends ImageReader {
          try
          {
             ImageInputStream iis = (ImageInputStream) input;
-            byte[] compressedBytes = new byte[(int) iis.length ()];
+            ByteArrayOutputStream baos=new ByteArrayOutputStream();
             byte[] tempBuffer = new byte[TEMP_BUFFER_SIZE];
             int bytesRead;
-            int offset = 0;
-            while ((bytesRead = iis.read (tempBuffer, 0, TEMP_BUFFER_SIZE)) !=
-                   -1)
-            {
-               System.arraycopy (tempBuffer, 0, compressedBytes, offset,
-                     bytesRead);
-               offset += bytesRead;
-            }
-            decoder.setCompressedStream (compressedBytes);
+            
+            while ((bytesRead=iis.read(tempBuffer, 0, TEMP_BUFFER_SIZE))!=-1)
+               baos.write(tempBuffer,0, bytesRead);
+
+            decoder.setCompressedStream (baos.toByteArray());
          }
          catch (IOException ioe)
          {
