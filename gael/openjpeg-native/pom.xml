@@ -4,13 +4,17 @@
    http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>fr.gael.openjpeg</groupId>
+      <artifactId>openjpeg</artifactId>
+      <version>2.2.0</version>
+   </parent>
    
-   <groupId>fr.gael.openjpeg</groupId>
-   <artifactId>openjpeg-libraries</artifactId>
-   <version>1.0.0</version>
+   <artifactId>openjpeg-native</artifactId>
    <packaging>pom</packaging>
 
-   <name>OpenJpeg Libraries</name>
+   <name>OpenJpeg native libraries</name>
    
    <properties>
       <project.build.directory>${basedir}/target</project.build.directory>
@@ -115,7 +119,7 @@
                         <repositoryLayout>default</repositoryLayout>
                         <groupId>org.openJpeg</groupId>
                         <artifactId>libopenjp2</artifactId>
-                        <version>${openjpeg.version}</version>
+                        <version>${project.version}</version>
                         <classifier>${openjpeg.classifier}</classifier>
                         <packaging>${openjpeg.packaging}</packaging>
                      </configuration>
