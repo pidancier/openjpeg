@@ -19,4 +19,4 @@ To deploy library only use command :
 @see https://maven.apache.org/settings.html
 
 basic command line on Unix system is
-mvn clean package Dcmake.generator="Unix Makefiles"
+mvn -Dcmake.generator="Unix Makefiles" -Dsettings.server.id=gael-main clean package deploy

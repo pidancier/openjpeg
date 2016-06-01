@@ -7,14 +7,14 @@
    
    <groupId>fr.gael.openjpeg</groupId>
    <artifactId>openjpeg-libraries</artifactId>
-   <version>0.1.0</version>
+   <version>1.0.0</version>
    <packaging>pom</packaging>
 
    <name>OpenJpeg Libraries</name>
    
    <properties>
       <project.build.directory>${basedir}/target</project.build.directory>
-      <openjpeg.version>2.1.1</openjpeg.version>
+      <openjpeg.version>2.1.2</openjpeg.version>
       <settings.server.id>gael-main</settings.server.id>
    </properties>
    
