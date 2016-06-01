@@ -52,6 +52,7 @@
                      <targetPath>${project.build.directory}</targetPath>
                      <generator>Unix Makefiles</generator>
                      <options>
+                        <option>-DCMAKE_BUILD_TYPE=Debug</option>
                         <option>-DBUILD_SHARED_LIBS:bool=on</option>
                         <option>-DCMAKE_INSTALL_PREFIX=${basedir}/target</option>
                         <option>-DBUILD_CODEC:bool=off</option>
