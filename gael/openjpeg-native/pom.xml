@@ -18,27 +18,10 @@
    
    <properties>
       <project.build.directory>${basedir}/target</project.build.directory>
-      <openjpeg.version>2.1.2</openjpeg.version>
-      <settings.server.id>gael-main</settings.server.id>
+      <openjpeg.native.groupid>fr.gael.openjpeg</openjpeg.native.groupid>
+      <openjpeg.native.artifactid>openjpeg-native</openjpeg.native.artifactid>
    </properties>
    
-   <distributionManagement>
-      <repository>
-         <id>${settings.server.id}</id>
-         <name>GAEL Systems - Main Repository Releases</name>
-         <uniqueVersion>true</uniqueVersion>
-         <url>http://repository.gael.fr:8081/nexus/content/repositories/releases</url>
-         <layout>default</layout>
-      </repository>
-      <snapshotRepository>
-         <id>${settings.server.id}</id>
-         <name>GAEL Systems - Main Repository Snapshot</name>
-         <uniqueVersion>true</uniqueVersion>
-         <url>http://repository.gael.fr:8081/nexus/content/repositories/snapshots</url>
-         <layout>default</layout>
-      </snapshotRepository>
-   </distributionManagement>
-
    <build>
       <plugins>
          <plugin>
@@ -117,8 +100,8 @@
                      <configuration>
                         <file>${project.build.directory}/bin/libopenjp2.${openjpeg.packaging}</file>
                         <repositoryLayout>default</repositoryLayout>
-                        <groupId>org.openJpeg</groupId>
-                        <artifactId>libopenjp2</artifactId>
+                        <groupId>${openjpeg.native.groupid}</groupId>
+                        <artifactId>${openjpeg.native.artifactid}</artifactId>
                         <version>${project.version}</version>
                         <classifier>${openjpeg.classifier}</classifier>
                         <packaging>${openjpeg.packaging}</packaging>
@@ -141,10 +124,10 @@
                   <configuration>
                      <file>${project.build.directory}/bin/libopenjp2.${openjpeg.packaging}</file>
                      <url>http://repository.gael.fr:8081/nexus/content/repositories/releases</url>
-                     <repositoryId>${settings.server.id}</repositoryId> <!-- id server access - see your settings.xml -->
-                     <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2</artifactId>
-                     <version>${openjpeg.version}</version>
+                     <repositoryId>gael-main</repositoryId>
+                     <groupId>${openjpeg.native.groupid}</groupId>
+                     <artifactId>${openjpeg.native.artifactid}</artifactId>
+                     <version>${project.version}</version>
                      <classifier>${openjpeg.classifier}</classifier>
                      <packaging>${openjpeg.packaging}</packaging>
                      <updateReleaseInfo>true</updateReleaseInfo>

@@ -46,20 +46,4 @@
       </dependency>
    </dependencies>
    
-   <distributionManagement>
-      <repository>
-         <id>gael-main</id>
-         <name>GAEL Systems - Main Repository Releases</name>
-         <uniqueVersion>true</uniqueVersion>
-         <url>http://repository.gael.fr:8081/nexus/content/repositories/releases</url>
-         <layout>default</layout>
-      </repository>
-      <snapshotRepository>
-         <id>gael-main</id>
-         <name>GAEL Systems - Main Repository Snapshot</name>
-         <uniqueVersion>true</uniqueVersion>
-         <url>http://repository.gael.fr:8081/nexus/content/repositories/snapshots</url>
-         <layout>default</layout>
-      </snapshotRepository>
-   </distributionManagement>
 </project>
