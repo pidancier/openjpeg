@@ -62,7 +62,7 @@ if(WIN32)
 endif()
 add_library(${OPENJPEG_LIBRARY_NAME} ${OPENJPEG_SRCS})
 
-target_link_libraries(${OPENJPEG_LIBRARY_NAME} ${PNG_LIBNAME} ${TIFF_LIBNAME} ${LCMS_LIBNAME} ${Z_LIBNAME})
+target_link_libraries(${OPENJPEG_LIBRARY_NAME})
 if(UNIX)
   target_link_libraries(${OPENJPEG_LIBRARY_NAME} m)
 endif()

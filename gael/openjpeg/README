@@ -1,0 +1,19 @@
+#####################################################
+# OpenJPEG Library for DHuS
+#####################################################
+
+## PACKAGE, INSTALL, DEPLOY
+
+To compile library only use command :
+   mvn clean package -Dcmake.generator=<generator>
+
+To install library only use command :
+   mvn clean install -Dcmake.generator=<generator>
+
+To deploy library only use command :
+   mvn clean package -Dcmake.generator=<generator> -Dsettings.server.id=<serverId>
+
+ - <generator> your C compilator name for CMake 
+@see https://cmake.org/cmake/help/v3.4/manual/cmake-generators.7.html
+ - <serverId> your server id access to the GAEL Systems repository
+@see https://maven.apache.org/settings.html

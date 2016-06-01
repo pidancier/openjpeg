@@ -7,27 +7,27 @@
    
    <groupId>fr.gael.openjpeg</groupId>
    <artifactId>openjpeg-libraries</artifactId>
-   <version>0.0.1</version>
+   <version>0.1.0</version>
    <packaging>pom</packaging>
 
    <name>OpenJpeg Libraries</name>
    
    <properties>
       <project.build.directory>${basedir}/target</project.build.directory>
-      <openjpeg.classifier>${os.name}-${os.arch}</openjpeg.classifier>
       <openjpeg.version>2.1.1</openjpeg.version>
+      <settings.server.id>gael-main</settings.server.id>
    </properties>
    
    <distributionManagement>
       <repository>
-         <id>gael-main</id>
+         <id>${settings.server.id}</id>
          <name>GAEL Systems - Main Repository Releases</name>
          <uniqueVersion>true</uniqueVersion>
          <url>http://repository.gael.fr:8081/nexus/content/repositories/releases</url>
          <layout>default</layout>
       </repository>
       <snapshotRepository>
-         <id>gael-main</id>
+         <id>${settings.server.id}</id>
          <name>GAEL Systems - Main Repository Snapshot</name>
          <uniqueVersion>true</uniqueVersion>
          <url>http://repository.gael.fr:8081/nexus/content/repositories/snapshots</url>
@@ -37,6 +37,33 @@
 
    <build>
       <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>1.4.1</version>
+            <executions>
+               <execution>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireProperty>
+                           <property>cmake.generator</property>
+                           <message>You must set your CMake Generator to compile via 'cmake.generator' property !</message>
+                        </requireProperty>
+                        <requireProperty>
+                           <property>cmake.generator</property>
+                           <message>You must set your CMake Generator to compile via 'cmake.generator' property !</message>
+                        </requireProperty>
+                     </rules>
+                     <fail>true</fail>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         
          <plugin>
             <groupId>com.googlecode.cmake-maven-project</groupId>
             <artifactId>cmake-maven-plugin</artifactId>
@@ -50,7 +77,7 @@
                   <configuration>
                      <sourcePath>../../</sourcePath>
                      <targetPath>${project.build.directory}</targetPath>
-                     <generator>Unix Makefiles</generator>
+                     <generator>${cmake.generator}</generator>
                      <options>
                         <option>-DCMAKE_BUILD_TYPE=Debug</option>
                         <option>-DBUILD_SHARED_LIBS:bool=on</option>
@@ -70,34 +97,32 @@
                   </configuration>
                </execution>
             </executions>
-         </plugin>
-         
-         <!-- Install native libraries -->
+			</plugin>
+             
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>2.5.2</version>
-            <executions>
-               <execution>
-                  <id>install-libopenjpeg</id>
-                  <phase>install</phase>
-                  <goals>
-                     <goal>install-file</goal>
-                  </goals>
-                  <configuration>
-                     <file>${project.build.directory}/bin/libopenjp2.so</file>
-                     <repositoryLayout>default</repositoryLayout>
-                     <groupId>org.openJpeg</groupId>
-                     <artifactId>libopenjp2</artifactId>
-                     <version>${openjpeg.version}</version>
-                     <classifier>${openjpeg.classifier}</classifier>
-                     <packaging>so</packaging>
-                  </configuration>
-               </execution>
-            </executions>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-install-plugin</artifactId>
+               <version>2.5.2</version>
+               <executions>
+                  <execution>
+                     <id>install-libopenjpeg</id>
+                     <phase>install</phase>
+                     <goals>
+                        <goal>install-file</goal>
+                     </goals>
+                     <configuration>
+                        <file>${project.build.directory}/bin/libopenjp2.${openjpeg.packaging}</file>
+                        <repositoryLayout>default</repositoryLayout>
+                        <groupId>org.openJpeg</groupId>
+                        <artifactId>libopenjp2</artifactId>
+                        <version>${openjpeg.version}</version>
+                        <classifier>${openjpeg.classifier}</classifier>
+                        <packaging>${openjpeg.packaging}</packaging>
+                     </configuration>
+                  </execution>
+               </executions>
          </plugin>
-         
-         <!-- Deploy native libraries -->
+
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-deploy-plugin</artifactId>
@@ -110,14 +135,14 @@
                      <goal>deploy-file</goal>
                   </goals>
                   <configuration>
-                     <file>${project.build.directory}/bin/libopenjp2.so</file>
+                     <file>${project.build.directory}/bin/libopenjp2.${openjpeg.packaging}</file>
                      <url>http://repository.gael.fr:8081/nexus/content/repositories/releases</url>
-                     <repositoryId>gael-main</repositoryId> <!-- id server access - see your settings.xml -->
+                     <repositoryId>${settings.server.id}</repositoryId> <!-- id server access - see your settings.xml -->
                      <groupId>org.openJpeg</groupId>
                      <artifactId>libopenjp2</artifactId>
                      <version>${openjpeg.version}</version>
                      <classifier>${openjpeg.classifier}</classifier>
-                     <packaging>so</packaging>
+                     <packaging>${openjpeg.packaging}</packaging>
                      <updateReleaseInfo>true</updateReleaseInfo>
                   </configuration>
                </execution>
@@ -126,4 +151,47 @@
       </plugins>
    </build>
 
+   <profiles>
+      <profile>
+         <id>linux-libraries</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <os>
+               <name>Linux</name>
+            </os>
+         </activation>
+         <properties>
+            <openjpeg.classifier>Linux-${os.arch}</openjpeg.classifier>
+            <openjpeg.packaging>so</openjpeg.packaging>
+         </properties>
+      </profile>
+
+      <profile>
+         <id>windows-libraries</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <os>
+               <family>dos</family>
+            </os>
+         </activation>
+         <properties>
+            <openjpeg.classifier>Windows-${os.arch}</openjpeg.classifier>
+            <openjpeg.packaging>dll</openjpeg.packaging>
+         </properties>
+      </profile>
+
+      <profile>
+         <id>mac-os-x-libraries</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <os>
+               <family>mac</family>
+            </os>
+         </activation>
+         <properties>
+            <openjpeg.classifier>Mac-${os.arch}</openjpeg.classifier>
+            <openjpeg.packaging>dylib</openjpeg.packaging>
+         </properties>
+      </profile>
+   </profiles>
 </project>
