@@ -17,3 +17,6 @@ To deploy library only use command :
 @see https://cmake.org/cmake/help/v3.4/manual/cmake-generators.7.html
  - <serverId> your server id access to the GAEL Systems repository
 @see https://maven.apache.org/settings.html
+
+basic command line on Unix system is
+mvn clean package Dcmake.generator="Unix Makefiles"
