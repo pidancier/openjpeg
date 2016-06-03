@@ -28,8 +28,11 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 .metadata
-/gael/openjpeg/target/
-/gael/openjpegjni/target/
+/gael/openjpeg-native/target/
+/gael/openjpeg-jni/target/
 nbactions.xml
 .idea
+.classpath
+.project
+.settings
 *.iml

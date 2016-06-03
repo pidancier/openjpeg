@@ -113,7 +113,7 @@ public abstract class GenericImageReaderSpi extends ImageReaderSpi {
         if (registered) {
             return;
         }
-
+        
         registered = true;
         if (!_utilities.areLibrariesAvailable(libraries)) {
             final IIORegistry iioRegistry = (IIORegistry) registry;
@@ -127,7 +127,7 @@ public abstract class GenericImageReaderSpi extends ImageReaderSpi {
             }
             return;
         }
-        
+        /*
         final List<ImageReaderWriterSpi> readers = Utils.getJDKImageReaderWriterSPI(registry,format, true);
         for (ImageReaderWriterSpi elem:readers) {
         	if (elem instanceof ImageReaderSpi){
@@ -139,6 +139,7 @@ public abstract class GenericImageReaderSpi extends ImageReaderSpi {
         	}
 
         }
+        */
     }
 
 	
