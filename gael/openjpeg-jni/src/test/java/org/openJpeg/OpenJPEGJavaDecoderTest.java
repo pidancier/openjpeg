@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
-import org.codecCentral.imageio.generic.NativeUtilities;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,7 +12,9 @@ import org.testng.annotations.Test;
 
 public class OpenJPEGJavaDecoderTest
 {
-   private NativeUtilities _utilities = new NativeUtilities();
+   static {
+      System.loadLibrary("openjp2");
+   }
    private static final int  TEMP_BUFFER_SIZE = 1024*1024;
    String filesource = "test.jp2";
    String working_file;
@@ -44,8 +44,6 @@ public class OpenJPEGJavaDecoderTest
          }
       }
       working_file = w_file.getPath();
-      
-      _utilities.loadLibraries(Arrays.asList("openjp2"));
    }
    
    @AfterClass

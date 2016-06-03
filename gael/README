@@ -1,0 +1,12 @@
+#####################################################
+# OpenJPEG Library for DHuS
+#####################################################
+
+## PACKAGE, INSTALL, DEPLOY
+
+basic command line on Unix system is
+mvn -Djava.library.path=`pwd`/openjpeg-native/target/bin clean package deploy
+
+But TestNg is unable to load native libraries... So I skiped tests at compile time. Manage test within the IDE.
+
+mvn clean package deploy
