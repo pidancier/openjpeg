@@ -9,7 +9,8 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_openJpeg_OpenJPEGJavaEncoder_internalDecodeImageToJ2K(JNIEnv *, jobject, jobjectArray);
-JNIEXPORT jint JNICALL Java_org_openJpeg_OpenJPEGJavaDecoder_internalGetDecodeFormat(JNIEnv *env, jobject obj,jobjectArray javaParameters) ;
+JNIEXPORT jint JNICALL Java_org_openJpeg_OpenJPEGJavaDecoder_internalGetDecodeFormat(JNIEnv *, jobject ,jobjectArray) ;
+JNIEXPORT jint JNICALL Java_org_openJpeg_OpenJPEGJavaDecoder_internalDecodeHeader(JNIEnv *, jobject ,jobjectArray) ;
 
 #ifdef __cplusplus
 }

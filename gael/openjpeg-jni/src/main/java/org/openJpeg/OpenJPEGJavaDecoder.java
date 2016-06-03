@@ -95,6 +95,12 @@ public class OpenJPEGJavaDecoder extends DecoderBase {
 		return internalGetDecodeFormat(parameters);
 	}
 
+   @Override
+   protected int internalGetHeader(String[] parameters)
+   {
+      return internalDecodeHeader(parameters);
+   }
+
 
 	//NATIVE METHODS
 
@@ -104,6 +110,7 @@ public class OpenJPEGJavaDecoder extends DecoderBase {
 	 */
 	/* ================================================================== */
 	private native int internalDecodeJ2KtoImage(String[] parameters);
+	private native int internalDecodeHeader(String[] parameters);
 	private native int internalGetDecodeFormat(String[] parameters);
 
 	/* ================================================================== */

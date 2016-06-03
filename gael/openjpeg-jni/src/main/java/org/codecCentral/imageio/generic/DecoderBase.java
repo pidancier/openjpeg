@@ -80,6 +80,29 @@ public abstract class DecoderBase extends DecoderEncoderBase {
 		decoder_arguments = args;
 		internalDecode(convertArguments(decoder_arguments));
 	}
+	
+	public void header(String fname)
+	{
+           String[] args = null;
+           reset();
+           if (fname != null)
+           {
+                   args = new String[1];
+                   if (DEBUG_DECOMPRESS_FROM_BUFFER) {
+                           try {
+                                   compressedStream = getBytesFromFile(new File(fname));
+                           } catch (IOException e) {
+                                   e.printStackTrace();
+                                   return;
+                           }
+
+                   } else {
+                           args[0] = fname;
+                   }                       
+           }
+           decoder_arguments = args;
+           internalGetHeader(convertArguments(decoder_arguments));
+   }
 
 	private static byte[] getBytesFromFile(File file) throws IOException {
 		long length = file.length();
@@ -141,5 +164,6 @@ public abstract class DecoderBase extends DecoderEncoderBase {
 		return canDecode;
 	}
 	protected abstract int internalDecode(String[] parameters);
+	protected abstract int internalGetHeader(String[] parameters);
 	protected abstract int internalGetFormat(String[] parameters);
 }
