@@ -37,100 +37,25 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef _WIN32
-#include "windirent.h"
-#else
-#include <dirent.h>
-#endif /* _WIN32 */
+#include "opj_includes.h"
+#include "openjpeg.h"
+#include "opj_malloc.h"
+
+#include "org_openJpeg_OpenJPEGJavaDecoder.h"
 
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <strings.h>
-#define _stricmp strcasecmp
-#define _strnicmp strncasecmp
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
 #endif /* _WIN32 */
-
-#include "openjpeg.h"
-#include "opj_getopt.h"
-#include "convert.h"
-#include "index.h"
 
 #include "format_defs.h"
 
-
-/**
-error callback returning the message to Java andexpecting a callback_variables_t client object
-*/
-void error_callback(const char *msg, void *client_data) {
-   jstring jbuffer;
-   callback_variables_t* vars = NULL;
-   JNIEnv *env = NULL;
-
-   if (!client_data)
-      return;
-   vars = (callback_variables_t*) client_data;
-   env = vars->env;
-
-   jbuffer = (*env)->NewStringUTF(env, msg);
-   (*env)->ExceptionClear(env);
-   (*env)->CallVoidMethod(env, *(vars->jobj), vars->error_mid, jbuffer);
-
-   if ((*env)->ExceptionOccurred(env)) {
-      fprintf(stderr,"C: Exception during call back method\n");
-      (*env)->ExceptionDescribe(env);
-      (*env)->ExceptionClear(env);
-   }
-   (*env)->DeleteLocalRef(env, jbuffer);
-}
-/**
-warning callback returning the message to Java andexpecting a callback_variables_t client object
-*/
-void warning_callback(const char *msg, void *client_data) {
-   jstring jbuffer;
-   callback_variables_t* vars = NULL;
-   JNIEnv *env = NULL;
-
-   if (!client_data)
-      return;
-   vars = (callback_variables_t*) client_data;
-   env = vars->env;
-
-   jbuffer = (*env)->NewStringUTF(env, msg);
-   (*env)->ExceptionClear(env);
-   (*env)->CallVoidMethod(env, *(vars->jobj), vars->message_mid, jbuffer);
-
-   if ((*env)->ExceptionOccurred(env)) {
-      fprintf(stderr,"C: Exception during call back method\n");
-      (*env)->ExceptionDescribe(env);
-      (*env)->ExceptionClear(env);
-   }
-   (*env)->DeleteLocalRef(env, jbuffer);
-}
-/**
-information callback returning the message to Java andexpecting a callback_variables_t client object
-*/
-void info_callback(const char *msg, void *client_data) {
-   jstring jbuffer;
-   callback_variables_t* vars = NULL;
-   JNIEnv *env = NULL;
-
-   if (!client_data)
-      return;
-   vars = (callback_variables_t*) client_data;
-   env = vars->env;
-
-   jbuffer = (*env)->NewStringUTF(env, msg);
-   (*env)->ExceptionClear(env);
-   (*env)->CallVoidMethod(env, *(vars->jobj), vars->message_mid, jbuffer);
-
-   if ((*env)->ExceptionOccurred(env)) {
-      fprintf(stderr,"C: Exception during call back method\n");
-      (*env)->ExceptionDescribe(env);
-      (*env)->ExceptionClear(env);
-   }
-   (*env)->DeleteLocalRef(env, jbuffer);
-}
+extern void error_callback(const char *msg, void *client_data);
+extern void warning_callback(const char *msg, void *client_data);
+extern void info_callback(const char *msg, void *client_data);
+static void print_image(opj_image_t* image);
 
 /* Convert a file into a buffer buffer must be freed by the caller */
 static opj_buffer_info_t fileToBuffer(const char* fileName)
@@ -183,7 +108,7 @@ static int buffer_format(opj_buffer_info_t* buf_info)
 }/*  buffer_format() */
 
 /* Build the codec from the format id */
-static l_codec *codec_format (int format)
+static opj_codec_t *codec_format (int format)
 {
    switch(format)
    {
@@ -208,10 +133,39 @@ static l_codec *codec_format (int format)
    return 0L;
 }
 
-
-static int get_header (opj_stream_t stream, int format, opj_image_t* image)
+static int ext_file_format(const char *filename)
 {
-   opj_image_t* image = NULL;
+   unsigned int i;
+
+   static const char *extension[] =
+   {
+      "j2k", "jp2", "jpt", "j2c", "jpc"
+   };
+
+   static const int format[] =
+   {
+      J2K_CFMT, JP2_CFMT, JPT_CFMT, J2K_CFMT, J2K_CFMT
+   };
+
+   char *ext = (char*)strrchr(filename, '.');
+
+   if(ext == NULL) return -1;
+
+   ext++;
+   if(*ext)
+   {
+      for(i = 0; i < sizeof(format)/sizeof(*format); i++)
+      {
+         if(strnicmp(ext, extension[i], 3) == 0)
+            return format[i];
+      }
+   }
+   return -1;
+}
+
+
+static int get_header (opj_stream_t l_stream, int format, opj_image_t** image)
+{
    opj_codec_t* l_codec = codec_format (format);
 
    /* catch events using our callbacks and give a local context */      
@@ -219,12 +173,38 @@ static int get_header (opj_stream_t stream, int format, opj_image_t* image)
    opj_set_warning_handler(l_codec, warning_callback,00);
    opj_set_error_handler(l_codec, error_callback,00);
 
-   opj_read_header(l_stream, l_codec, &image);
-   print_image(image);
+   opj_read_header(l_stream, l_codec, image);
+   opj_destroy_codec(l_codec);
 }
 
+static const char *clr_space(OPJ_COLOR_SPACE i)
+{
+   if(i == OPJ_CLRSPC_SRGB) return "OPJ_CLRSPC_SRGB";
+   if(i == OPJ_CLRSPC_GRAY) return "OPJ_CLRSPC_GRAY";
+   if(i == OPJ_CLRSPC_SYCC) return "OPJ_CLRSPC_SYCC";
+   if(i == OPJ_CLRSPC_EYCC) return "OPJ_CLRSPC_EYCC";
+   if(i == OPJ_CLRSPC_CMYK) return "OPJ_CLRSPC_CMYK";
+   if(i == OPJ_CLRSPC_UNKNOWN) return "OPJ_CLRSPC_UNKNOWN";
+   return "CLRSPC_UNDEFINED";
+}
 
-void print_image(opj_image_t* image)
+static void print_image_header (opj_image_comp_t* comp_header, FILE* out_stream)
+{
+   char tab[3];
+   tab[0] = '\t';tab[1] = '\t';tab[2] = '\0';
+
+   fprintf(out_stream, "%s dx=%d, dy=%d\n", tab, comp_header->dx, comp_header->dy);
+   fprintf(out_stream, "%s w=%d, h=%d\n", tab, comp_header->w, comp_header->h);
+   fprintf(out_stream, "%s x0=%d, y0=%d\n", tab, comp_header->x0, comp_header->y0);
+   fprintf(out_stream, "%s prec=%d\n", tab, comp_header->prec);
+   fprintf(out_stream, "%s bpp=%d\n", tab, comp_header->bpp);
+   fprintf(out_stream, "%s sgnd=%d\n", tab, comp_header->sgnd);
+   fprintf(out_stream, "%s resno_decoded=%d\n", tab, comp_header->resno_decoded);
+   fprintf(out_stream, "%s factor=%d\n", tab, comp_header->factor);
+   fprintf(out_stream, "%s alpha=%d\n", tab, comp_header->alpha);
+}
+
+static void print_image(opj_image_t* img_header)
 {
    char tab[2];
    FILE*out_stream=stdout; 
@@ -250,32 +230,19 @@ void print_image(opj_image_t* image)
    fprintf(out_stream, "}\n");
 }
 
-void print_image_header (opj_image_comp_t* comp_header, FILE* out_stream)
+
+void hide_openjpeg_get_header_from_file (const char *file)
 {
-   char tab[3];
-   tab[0] = '\t';tab[1] = '\t';tab[2] = '\0';
+   //opj_buffer_info_t buffer=fileToBuffer(file);
+   int format = ext_file_format(file);
+   opj_stream_t *stream = opj_stream_create_default_file_stream(file,OPJ_TRUE);
 
-   fprintf(out_stream, "%s dx=%d, dy=%d\n", tab, comp_header->dx, comp_header->dy);
-   fprintf(out_stream, "%s w=%d, h=%d\n", tab, comp_header->w, comp_header->h);
-   fprintf(out_stream, "%s x0=%d, y0=%d\n", tab, comp_header->x0, comp_header->y0);
-   fprintf(out_stream, "%s prec=%d\n", tab, comp_header->prec);
-   fprintf(out_stream, "%s bpp=%d\n", tab, comp_header->bpp);
-   fprintf(out_stream, "%s sgnd=%d\n", tab, comp_header->sgnd);
-   fprintf(out_stream, "%s resno_decoded=%d\n", tab, comp_header->resno_decoded);
-   fprintf(out_stream, "%s factor=%d\n", tab, comp_header->factor);
-   fprintf(out_stream, "%s alpha=%d\n", tab, comp_header->alpha);
+   opj_image_t *image;
+
+   get_header (stream, format, &image);
+
+   print_image(image);
+
+   opj_stream_destroy (stream);
+   opj_image_destroy (image);
 }
-
-static const char *clr_space(OPJ_COLOR_SPACE i)
-{
-   if(i == OPJ_CLRSPC_SRGB) return "OPJ_CLRSPC_SRGB";
-   if(i == OPJ_CLRSPC_GRAY) return "OPJ_CLRSPC_GRAY";
-   if(i == OPJ_CLRSPC_SYCC) return "OPJ_CLRSPC_SYCC";
-   if(i == OPJ_CLRSPC_EYCC) return "OPJ_CLRSPC_EYCC";
-   if(i == OPJ_CLRSPC_CYMK) return "OPJ_CLRSPC_CYMK";
-   if(i == OPJ_CLRSPC_UNKNOWN) return "OPJ_CLRSPC_UNKNOWN";
-   return "CLRSPC_UNDEFINED";
-}
-
-
-

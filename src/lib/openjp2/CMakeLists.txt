@@ -39,6 +39,7 @@ set(OPENJPEG_SRCS
   ${OPENJPEG_SOURCE_DIR}/src/bin/common/color.c
   ${OPENJPEG_SOURCE_DIR}/wrapping/java/openjp2/OpenJPEGJava.c
   ${OPENJPEG_SOURCE_DIR}/wrapping/java/openjp2/OpenJPEGJavaDecoder.c
+  ${OPENJPEG_SOURCE_DIR}/wrapping/java/openjp2/OpenJPEGJavaDecodeHeader.c
 )
 if(BUILD_JPIP)
   add_definitions(-DUSE_JPIP)
