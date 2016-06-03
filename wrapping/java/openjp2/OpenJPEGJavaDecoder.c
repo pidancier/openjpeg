@@ -232,7 +232,7 @@ void info_callback(const char *msg, void *client_data) {
 
 static int infile_format(FILE *reader, const char *fname)
 {
-	const *magic_s;
+	char const *magic_s;
 	int ext_format, magic_format;
 	unsigned char buf[12];
 

@@ -534,7 +534,7 @@ static int parse_cmdline_encoder(int argc, const char **argv, opj_cparameters_t 
 	opj_reset_options_reading();
 
 	while (1) {
-    int c = opj_getopt_long(argc, argv, optlist,long_option,totlen);
+    int c = opj_getopt_long(argc, (char **)argv, optlist,long_option,totlen);
 		if (c == -1)
 			break;
 		switch (c) {
@@ -778,7 +778,7 @@ static int parse_cmdline_encoder(int argc, const char **argv, opj_cparameters_t 
 				while (sscanf(s, "T%d=%d,%d,%d,%d,%d,%4s", &POC[numpocs].tile,
 					&POC[numpocs].resno0, &POC[numpocs].compno0,
 					&POC[numpocs].layno1, &POC[numpocs].resno1,
-					&POC[numpocs].compno1, &POC[numpocs].progorder) == 7) {
+					&POC[numpocs].compno1, (char*)&POC[numpocs].progorder) == 7) {
 					POC[numpocs].prg1 = give_progression(POC[numpocs].progorder);
 					numpocs++;
 					while (*s && *s != '/') {
@@ -1891,7 +1891,7 @@ JNIEXPORT jlong JNICALL Java_org_openJpeg_OpenJPEGJavaEncoder_internalEncodeImag
 	}
 
 	argc = (int) arraySize +1;
-	argv = (char**)opj_malloc(argc*sizeof(char*));
+	argv = (const char**)opj_malloc(argc*sizeof(char*));
 	argv[0] = "ProgramName.exe";	/* The program name: useless*/
 	j=0;
 	for (i=1; i<argc; i++)
