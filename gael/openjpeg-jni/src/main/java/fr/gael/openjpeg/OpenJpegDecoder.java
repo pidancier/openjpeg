@@ -10,14 +10,15 @@ import org.apache.log4j.Logger;
 public class OpenJpegDecoder
 {
 
-   private static final AtomicBoolean IS_INIT = new AtomicBoolean (false);
-
-   private static void loadLibraries ()
+   private static boolean loaded = false;
+   /**
+    * Performs library loading only once, and avoid
+    * concurrency calls.
+    */
+   private static synchronized void loadLibraries ()
    {
-      if (IS_INIT.getAndSet (true))
-      {
-         return;
-      }
+      // Library already loaded.
+      if (loaded) return;
 
       try
       {
@@ -27,6 +28,10 @@ public class OpenJpegDecoder
       {
          throw new IllegalStateException (
                "Cannot load OpenJpeg libraries", e);
+      }
+      finally
+      {
+         loaded=true;
       }
    }
 
