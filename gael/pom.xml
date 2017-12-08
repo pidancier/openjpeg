@@ -6,15 +6,22 @@
    <modelVersion>4.0.0</modelVersion>
 
    <name>GAEL Systems - OpenJpeg Suite</name>
+   <description>
+      This suite contains all the necessary library to access jp2k images.
+         - module "openjpeg-native" containes native C part to conect to the openjpeg library
+           (must ne carfully recompiled with correct libc)
+         - module "openjpeg-jni" is the JNI connector the the native jp2k library.
+         - module "openjpeg-imageio" is the imageio connector tu use JP2K in imageio API.
+   </description>
 
    <groupId>fr.gael.openjpeg</groupId>
    <artifactId>openjpeg</artifactId>
-   <version>2.4.0</version>
+   <version>2.4.1</version>
    <packaging>pom</packaging>
 
    <properties>
       <openjpeg.version>2.1.1</openjpeg.version>
-      <gael.repo.auth>#undefined#</gael.repo.auth>
+      <gael.repo.auth>gael-main</gael.repo.auth>
    </properties>
 
    <distributionManagement>
@@ -32,9 +39,15 @@
       </snapshotRepository>
    </distributionManagement>
 
+<!--
+   All the modules shall be compiled manually to better manage sub-modules versions.
+   This suite module is the parent of all the module, to it contains project configuration
+   but must not contain sub-modules versions.
+
    <modules>
       <module>openjpeg-native</module>
       <module>openjpeg-jni</module>
       <module>openjpeg-imageio</module>
    </modules>
+-->
 </project>
