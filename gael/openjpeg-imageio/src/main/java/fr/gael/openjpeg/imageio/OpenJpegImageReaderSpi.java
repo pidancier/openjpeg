@@ -45,8 +45,6 @@ public class OpenJpegImageReaderSpi extends ImageReaderSpi
    private static final String[] EXT_IMAGE_METADATA_NAMES = null;
    private static final String[] EXT_IMAGE_METADATA_CLASS_NAMES = null;
 
-   private boolean isResgistered = false;
-
    public OpenJpegImageReaderSpi ()
    {
       super (VENDOR,
@@ -115,32 +113,5 @@ public class OpenJpegImageReaderSpi extends ImageReaderSpi
    {
       return new StringBuilder ("ImageIO OpenJpeg Image Reader version ")
             .append (VERSION).append (" by ").append (VENDOR).toString ();
-   }
-
-   @Override
-   public synchronized void onRegistration (ServiceRegistry registry,
-         Class category)
-   {
-      super.onRegistration (registry, category);
-
-      if (isResgistered)
-      {
-         return;
-      }
-      isResgistered = true;
-
-      IIORegistry iioRegistry = (IIORegistry) registry;
-      Class<ImageReaderSpi> spiClass = ImageReaderSpi.class;
-      Iterator<ImageReaderSpi> it =
-            iioRegistry.getServiceProviders (spiClass, true);
-
-      while (it.hasNext ())
-      {
-         ImageReaderSpi provider = it.next ();
-         if (provider instanceof OpenJpegImageReaderSpi)
-         {
-            registry.deregisterServiceProvider (provider);
-         }
-      }
    }
 }
