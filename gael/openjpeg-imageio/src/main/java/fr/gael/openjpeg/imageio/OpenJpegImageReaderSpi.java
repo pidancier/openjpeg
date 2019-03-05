@@ -1,20 +1,11 @@
 package fr.gael.openjpeg.imageio;
 
-import fr.gael.openjpeg.OpenJpegDecoder;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageReader;
-import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.spi.ImageReaderWriterSpi;
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.ImageInputStream;
 
 import org.apache.log4j.Logger;
@@ -44,6 +35,8 @@ public class OpenJpegImageReaderSpi extends ImageReaderSpi
    private static final String NAT_IMAGE_METADATA_CLASS_NAME = null;
    private static final String[] EXT_IMAGE_METADATA_NAMES = null;
    private static final String[] EXT_IMAGE_METADATA_CLASS_NAMES = null;
+
+   private static final int[] magic = {0x00,0x00,0x00,0x0C,0x6A,0x50,0x20,0x20,0x0D,0x0A,0x87,0x0A,0x00,0x00,0x00,0x14,0x66,0x74,0x79,0x70,0x6A,0x70,0x32};
 
    public OpenJpegImageReaderSpi ()
    {
@@ -76,7 +69,6 @@ public class OpenJpegImageReaderSpi extends ImageReaderSpi
       }
 
       boolean isDecodable = false;
-      OpenJpegDecoder decoder = new OpenJpegDecoder ();
       if (source instanceof File)
       {
          File file = (File) source;
@@ -89,13 +81,31 @@ public class OpenJpegImageReaderSpi extends ImageReaderSpi
          }
       }
       else if (source instanceof byte[])
-      {
-         // TODO check can decode byte[]
+      {     
+         // Checking JP2K magic number         
+         byte[] sce = (byte[]) source;
+         for (int i = 0; i < 23; i++)
+         {
+            if ((byte)magic[i] != sce[i])
+            {
+               return false;
+            }
+         }
          return true;
       }
       else if (source instanceof ImageInputStream)
       {
-         // TODO check can decode ImageInputStream
+         // Checking JP2K magic number
+         ImageInputStream sce = (ImageInputStream) source;
+         for (int i = 0; i < 23; i++)
+         {
+            if (magic[i] != sce.read())
+            {
+               sce.reset ();
+               return false;
+            }
+         }
+         sce.reset ();
          return true;
       }
 
